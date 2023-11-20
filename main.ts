@@ -23,10 +23,12 @@ function calculateData() {
     timestamp = input.runningTime();
     temp = Math.round(weatherbit.temperature() / 100 * 10000) / 10000;
     degrees = Math.round((temp * (9 / 5) + 32) * 10000) / 10000;
+    meters = Math.round(weatherbit.altitude() * 10000) / 10000;
     pressure_hPa = Math.idiv(weatherbit.pressure(), 700);
     pressureInHg = Math.round(pressure_hPa * 0.0295301 * 10000) / 10000;
     rawpressure = Math.round(weatherbit.pressure() * 10000) / 10000;
-    alt = Math.round((alt + 5400) * 10000) / 10000;
+    alt = 44330 * 3.28084 * (1 - (pressure_hPa / pressure_at_sea_level_hPa) ** (1 / 5.255));
+    alt = Math.round((alt + 5280) * 10000) / 10000;
     pressurePsi = Math.round(pressure_hPa * 0.014503773773022 * 10000) / 10000;
     humidityPercent = Math.round(weatherbit.humidity() / 1024 * 10000) / 10000;
     windSpeedMph = Math.round(weatherbit.windSpeed() * 0.621371 * 10000) / 10000;
@@ -53,6 +55,7 @@ function createJSONData() {
         "Rain (inches)": ${rainInches},
         "Wind Direction": "${windDirection}",
         "Altitude": ${alt},
+        "Altitude (m)": ${meters},
         "Raw Pressure": ${rawpressure},
         "Pressure (inHg)": ${pressureInHg}
     }`;
